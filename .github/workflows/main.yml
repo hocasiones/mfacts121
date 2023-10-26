@@ -14,4 +14,3 @@ jobs:
           server: mfacts121.com
           username: appsync@mfacts121.com
           password: ${{ secrets.ftp_password }}
-          dry-run: true
