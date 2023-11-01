@@ -7,9 +7,7 @@ import {
 	useTheme,
 } from "@mui/material"
 import { useQuery } from "@tanstack/react-query"
-import ky from "ky"
-import { forwardRef } from "react"
-import { useState } from "react"
+import { forwardRef, useState } from "react"
 import { Query, database } from "src/appwrite/config"
 
 const QuizResults = (
@@ -97,8 +95,8 @@ const QuizResults = (
 										data.type === "practise" &&
 										personalBestTime < timeFinished &&
 										score >= data.passingScore
-											? "none"
-											: "inline",
+											? "inline"
+											: "none",
 								}}
 							>
 								<strong>Personal Best: {personalBestTime} seconds</strong>

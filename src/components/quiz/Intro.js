@@ -1,35 +1,30 @@
 import { LoadingButton } from "@mui/lab"
-import { Box, Typography } from "@mui/material"
+import { Box } from "@mui/material"
 import _ from "lodash"
-import userStore from "src/store/userStore"
 
 const QuizIntro = ({ data, setintro, setcontent, startTimer }) => {
-	// const state = userStore();
-
 	return (
 		<Box sx={{ textAlign: "center" }}>
-			<Typography variant="h5">{_.capitalize(data.type)} Details:</Typography>
-			<Typography sx={{ mb: 1 }}>
-				<strong>Name:</strong> {data.name}
-			</Typography>
-			{data.type === "assessment" && (
-				<>
-					<Typography sx={{ mb: 1 }}>
-						<strong>Prerequisite:</strong> {data.prerequisite || "None"}
-					</Typography>
-					<Typography sx={{ mb: 1 }}>
-						<strong>Time Limit:</strong> {data.duration} seconds
-					</Typography>
-				</>
-			)}
-			<Typography sx={{ mb: 1 }}>
-				<strong>Total Items:</strong> {data.questions?.length}
-			</Typography>
-			{data.type === "assessment" && (
+			{/* <>
+				<Typography variant="h5">
+					{_.capitalize(data.type)} Details:
+				</Typography>
+				<Typography sx={{ mb: 1 }}>
+					<strong>Name:</strong> {data.name}
+				</Typography>
+				<Typography sx={{ mb: 1 }}>
+					<strong>Prerequisite:</strong> {data.prerequisite || "None"}
+				</Typography>
+				<Typography sx={{ mb: 1 }}>
+					<strong>Time Limit:</strong> {data.duration} seconds
+				</Typography>
+				<Typography sx={{ mb: 1 }}>
+					<strong>Total Items:</strong> {data.questions?.length}
+				</Typography>
 				<Typography sx={{ mb: 1 }}>
 					<strong>Passing Score:</strong> {data.passingScore}
 				</Typography>
-			)}
+			</> */}
 
 			<LoadingButton
 				loading={data.length === 0}
