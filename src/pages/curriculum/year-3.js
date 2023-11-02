@@ -1,5 +1,5 @@
 import React from "react"
-import { useTheme, Divider, Grid, Typography } from "@mui/material"
+import { useTheme, Divider, Grid, Typography, Stack } from "@mui/material"
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf"
 import FileOpenIcon from "@mui/icons-material/FileOpen"
 import ImageFrame from "src/components/ImageFrame"
@@ -25,7 +25,6 @@ const Year3 = () => {
 				sx={{
 					marginBottom: "40px",
 					display: "flex",
-					alignItems: "center",
 					textAlign: "center",
 				}}
 			>
@@ -76,7 +75,6 @@ const Year3 = () => {
 				sx={{
 					marginBottom: "40px",
 					display: "flex",
-					alignItems: "center",
 					textAlign: "center",
 				}}
 			>
@@ -200,6 +198,19 @@ const Year3 = () => {
 						<Typography variant="h5">Partial Array Activities</Typography>
 						<Typography variant="body1">3×5 2×4 3×3</Typography>
 					</ColorBox>
+				</Grid>
+				<Grid item xs={12} md={4}>
+					<Typography variant="h6" color="primary">
+						Pick and choose your activities, using these quick links.
+					</Typography>
+					<Stack spacing={4}>
+						<Vimeo video="160852899" responsive />
+						<Vimeo video="161279512" responsive />
+						<Vimeo video="162244737" responsive />
+						<Vimeo video="166610648" responsive />
+						<Vimeo video="168136062" responsive />
+						<Vimeo video="161280089" responsive />
+					</Stack>
 				</Grid>
 			</Grid>
 

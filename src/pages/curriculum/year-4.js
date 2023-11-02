@@ -1,5 +1,5 @@
 import React from "react"
-import { useTheme, Divider, Grid, Typography } from "@mui/material"
+import { useTheme, Divider, Grid, Typography, Stack } from "@mui/material"
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf"
 import FileOpenIcon from "@mui/icons-material/FileOpen"
 import ImageFrame from "src/components/ImageFrame"
@@ -26,7 +26,6 @@ const Year4 = () => {
 				sx={{
 					marginBottom: "40px",
 					display: "flex",
-					alignItems: "center",
 					textAlign: "center",
 				}}
 			>
@@ -64,7 +63,7 @@ const Year4 = () => {
 					<Typography variant="h6" color="primary">
 						Videos For This Year Level
 					</Typography>
-					<Vimeo video="161279311" responsive />
+					<Vimeo video="162245536" responsive />
 				</Grid>
 			</Grid>
 
@@ -76,7 +75,6 @@ const Year4 = () => {
 				sx={{
 					marginBottom: "40px",
 					display: "flex",
-					alignItems: "center",
 					textAlign: "center",
 				}}
 			>
@@ -210,6 +208,19 @@ const Year4 = () => {
 					>
 						<Typography variant="h5">Making Connections</Typography>
 					</ColorBox>
+				</Grid>
+				<Grid item xs={12} md={4}>
+					<Typography variant="h6" color="primary">
+						Pick and choose your activities, using these quick links.
+					</Typography>
+					<Stack spacing={4}>
+						<Vimeo video="160853968" responsive />
+						<Vimeo video="167376139" responsive />
+						<Vimeo video="165534394" responsive />
+						<Vimeo video="166610648" responsive />
+						<Vimeo video="168136062" responsive />
+						<Vimeo video="161280089" responsive />
+					</Stack>
 				</Grid>
 			</Grid>
 

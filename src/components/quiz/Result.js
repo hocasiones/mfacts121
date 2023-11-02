@@ -52,28 +52,30 @@ const QuizResults = (
 		enabled: !!userState.User,
 	})
 
+	let resultTitles
+	if (data.type === "assessment") {
+		resultTitles = (
+			<Typography
+				variant="h2"
+				mb={1}
+				sx={{
+					color:
+						score >= data?.passingScore
+							? theme.palette.common.green
+							: theme.palette.common.orange,
+				}}
+			>
+				{score >= data?.passingScore ? "Success!" : "You Failed! "}
+			</Typography>
+		)
+	}
+
 	return (
 		<Box mb={5}>
 			<Card ref={ref}>
 				<CardContent sx={{ textAlign: "center" }}>
 					<Stack spacing={2}>
-						{score >= data.passingScore ? (
-							<Typography
-								variant="h2"
-								mb={1}
-								sx={{ color: theme.palette.common.green }}
-							>
-								Success!
-							</Typography>
-						) : (
-							<Typography
-								variant="h2"
-								mb={1}
-								sx={{ color: theme.palette.common.orange }}
-							>
-								Keep Working On It!
-							</Typography>
-						)}
+						{resultTitles}
 						{/* <Typography
                 variant="h3"
                 mb={2}
