@@ -8,7 +8,7 @@ import {
 	Typography,
 	useTheme,
 } from "@mui/material"
-import { forwardRef, useEffect } from "react"
+import { forwardRef } from "react"
 import validator from "validator"
 
 const QuizContent = (

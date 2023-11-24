@@ -116,6 +116,9 @@ const QuizResults = (
 						<Typography variant="p">
 							<strong>Mistakes: {mistakes}</strong>
 						</Typography>
+						<Typography variant="p">
+							<strong>Points Earned: {data.type == "practise" ? 5 : 10}</strong>
+						</Typography>
 					</Stack>
 				</CardContent>
 			</Card>

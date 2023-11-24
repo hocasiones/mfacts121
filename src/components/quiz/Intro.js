@@ -2,7 +2,7 @@ import { LoadingButton } from "@mui/lab"
 import { Box } from "@mui/material"
 import _ from "lodash"
 
-const QuizIntro = ({ data, setintro, setcontent, startTimer }) => {
+const QuizIntro = ({ data, setIntro, setContent, startTimer }) => {
 	return (
 		<Box sx={{ textAlign: "center" }}>
 			{/* <>
@@ -38,23 +38,9 @@ const QuizIntro = ({ data, setintro, setcontent, startTimer }) => {
 					margin: "50px auto",
 				}}
 				onClick={() => {
-					setintro(false)
-					setcontent(true)
+					setIntro(false)
+					setContent(true)
 					startTimer(data.duration === 0 ? 999 * 1000 : data.duration * 1000)
-
-					// if (state.practiceTaken?.find((item) => item?.name === data.name) === undefined) {
-					//   state.setPracticeTaken([...state.practiceTaken, { name: data.name, consecutive: 1 }]);
-					// } else {
-					//   state.setPracticeTaken(
-					//     state.practiceTaken.map((item) => {
-					//       if (item.name === data.name) {
-					//         return { ...item, consecutive: item.consecutive + 1 };
-					//       } else {
-					//         return item;
-					//       }
-					//     })
-					//   );
-					// }
 				}}
 			>
 				Start {_.capitalize(data.type)}
