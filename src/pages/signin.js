@@ -98,7 +98,7 @@ const SignIn = () => {
 	}
 
 	return (
-		<SignInUp>
+		<SignInUp fullHeight>
 			<form onSubmit={handleSubmit(OnSubmit)}>
 				<Stack spacing={2} sx={{ ".MuiInputBase-root": { margin: 0 } }}>
 					<Box
