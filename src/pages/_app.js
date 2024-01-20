@@ -1,4 +1,5 @@
 import { LicenseInfo } from "@mui/x-license-pro"
+import { PayPalScriptProvider } from "@paypal/react-paypal-js"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { getCookies } from "cookies-next"
@@ -57,10 +58,20 @@ export default function MyApp({
 							<ThemeProvider>
 								<ThemeSettings>
 									<QueryClientProvider client={queryClient}>
-										<ProgressBar />
-										<Notice />
-										{getLayout(<Component {...pageProps} />)}
-										<ReactQueryDevtools initialIsOpen={false} />
+										<PayPalScriptProvider
+											options={{
+												clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+												"client-id": "sb",
+												// clientId: "test",
+												currency: "AUD",
+												intent: "capture",
+											}}
+										>
+											<ProgressBar />
+											<Notice />
+											{getLayout(<Component {...pageProps} />)}
+											<ReactQueryDevtools initialIsOpen={false} />
+										</PayPalScriptProvider>
 									</QueryClientProvider>
 								</ThemeSettings>
 							</ThemeProvider>

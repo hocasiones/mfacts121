@@ -3,9 +3,10 @@ import { uid } from "uid"
 const base64 = require("base-64")
 
 export default async function handler(req, res) {
+	console.log(req.body)
 	try {
 		const order = await fetch(
-			`${process.env.NEXT_PUBLIC_PAYPAL_BASE_URL}/checkout/orders`,
+			`${process.env.NEXT_PUBLIC_PAYPAL_BASE_URL}/checkout/orders/${req.body.orderID}/capture`,
 			{
 				method: "POST",
 				headers: {
@@ -21,29 +22,6 @@ export default async function handler(req, res) {
 								process.env.NEXT_PUBLIC_PAYPAL_SECRET_KEY
 						),
 				},
-				body: JSON.stringify({
-					intent: "CAPTURE",
-					purchase_units: [
-						{
-							reference_id: uid(20),
-							amount: { currency_code: "AUD", value: "100.00" },
-						},
-					],
-					payment_source: {
-						paypal: {
-							experience_context: {
-								payment_method_preference: "IMMEDIATE_PAYMENT_REQUIRED",
-								brand_name: "Mfacts121",
-								locale: "en-AU",
-								landing_page: "LOGIN",
-								shipping_preference: "NO_SHIPPING",
-								user_action: "PAY_NOW",
-								return_url: process.env.NEXT_PUBLIC_RETURN_URL,
-								cancel_url: process.env.NEXT_PUBLIC_CANCEL_URL,
-							},
-						},
-					},
-				}),
 			}
 		)
 		const orderJson = await order.json()
