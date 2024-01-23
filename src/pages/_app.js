@@ -19,6 +19,7 @@ import { CollapseDrawerProvider } from "../contexts/CollapseDrawerContext"
 import { SettingsProvider } from "../contexts/SettingsContext"
 import ThemeProvider from "../theme"
 import { getSettings } from "../utils/getSettings"
+import StripeProvider from "src/providers/stripe"
 LicenseInfo.setLicenseKey(process.env.NEXT_PUBLIC_MUI_KEY)
 
 // ----------------------------------------------------------------------
@@ -67,10 +68,12 @@ export default function MyApp({
 												intent: "capture",
 											}}
 										>
-											<ProgressBar />
-											<Notice />
-											{getLayout(<Component {...pageProps} />)}
-											<ReactQueryDevtools initialIsOpen={false} />
+											<StripeProvider>
+												<ProgressBar />
+												<Notice />
+												{getLayout(<Component {...pageProps} />)}
+												<ReactQueryDevtools initialIsOpen={false} />
+											</StripeProvider>
 										</PayPalScriptProvider>
 									</QueryClientProvider>
 								</ThemeSettings>

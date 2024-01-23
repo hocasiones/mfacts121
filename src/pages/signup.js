@@ -12,18 +12,13 @@ import {
 	TextField,
 	Typography,
 	useTheme,
+	GlobalStyles,
 } from "@mui/material"
 import Accordion from "@mui/material/Accordion"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import AccordionSummary from "@mui/material/AccordionSummary"
 import { PayPalButtons } from "@paypal/react-paypal-js"
-import {
-	PaymentElement,
-	useElements,
-	useStripe,
-	Elements,
-} from "@stripe/react-stripe-js"
-import { loadStripe } from "@stripe/stripe-js"
+import { PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js"
 import { useQuery } from "@tanstack/react-query"
 import ky from "ky"
 import Link from "next/link"
@@ -34,10 +29,10 @@ import { Query, database } from "src/appwrite/config"
 import Logo from "src/components/Logo"
 import SignInUp from "src/components/SignInUp"
 import * as yup from "yup"
+import userStore from "../store/userStore"
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
-const stripePromise = loadStripe("pk_test_Yk3eeONfzoRgC3NRk804V3Ez00AOK3oWa6")
 const stripeSecret = require("stripe")(
 	"sk_test_0gfZHymEXG8riNSCbxFkWL3D00S0JKgjxW"
 )
@@ -64,6 +59,8 @@ const StripeForm = () => {
 			// Make sure to disable form submission until Stripe.js has loaded.
 			return
 		}
+
+		elements.submit()
 
 		const paymentIntent = await stripeSecret.paymentIntents.create({
 			amount: 2000,
@@ -110,6 +107,7 @@ const StripeForm = () => {
 }
 
 const SignUp = () => {
+	const userState = userStore()
 	const theme = useTheme()
 	const isMobileView = useMedia("(max-width: 768px)", false)
 	const [expanded, setExpanded] = React.useState("panel1")
@@ -167,33 +165,6 @@ const SignUp = () => {
 			console.log(error)
 		}
 	}
-
-	//stripe options
-	const [paymentIntentSecret, setPaymentIntentSecret] = React.useState("")
-
-	const stripeMemo = React.useMemo(() => {
-		return stripePromise
-	}, [])
-
-	React.useEffect(() => {
-		const intent = async () => {
-			const paymentIntent = await stripeSecret.paymentIntents.create({
-				amount: 2000,
-				currency: "usd",
-				automatic_payment_methods: {
-					enabled: true,
-				},
-			})
-			setPaymentIntentSecret(paymentIntent?.client_secret)
-		}
-		intent()
-	}, [])
-
-	const options = React.useMemo(() => {
-		return {
-			clientSecret: paymentIntentSecret,
-		}
-	}, [paymentIntentSecret])
 
 	return (
 		<SignInUp sx={{ width: 800, maxWidth: "100%", padding: "30px" }}>
@@ -267,12 +238,17 @@ const SignUp = () => {
 						</AccordionSummary>
 						<AccordionDetails>
 							<Typography>
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-								eget. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-								Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-								eget.
+								Invoice will be sent to your email address. Please allow 24 to
+								48 hours for processing.
 							</Typography>
+							<Button
+								type="submit"
+								variant="contained"
+								size="large"
+								sx={{ width: "100%", marginTop: "10px" }}
+							>
+								SUBMIT
+							</Button>
 						</AccordionDetails>
 					</Accordion>
 					<Accordion
@@ -329,11 +305,7 @@ const SignUp = () => {
 				</Typography>
 			</Link>
 			<Portal container={ref.current}>
-				{paymentIntentSecret && (
-					<Elements stripe={stripeMemo} options={options}>
-						<StripeForm />
-					</Elements>
-				)}
+				{userState.stripePaymentIntentSecret && <StripeForm />}
 			</Portal>
 		</SignInUp>
 	)

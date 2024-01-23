@@ -23,6 +23,9 @@ let userStore = (set) => ({
 	incrementPracticePassed: (newVal) =>
 		set((state) => ({ practicePassed: state.practicePassed + 1 })),
 	setPracticePassed: (newVal) => set(() => ({ practicePassed: newVal })),
+	stripePaymentIntentSecret: "",
+	setStripePaymentIntentSecret: (newVal) =>
+		set(() => ({ stripePaymentIntentSecret: newVal })),
 })
 
 // persist the created state

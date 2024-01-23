@@ -20,7 +20,9 @@ const SignInUp = ({ children, fullHeight, sx }) => {
 				overflow: "auto",
 			}}
 		>
-			<GlobalStyles styles={{ body: { margin: "0" } }} />
+			<GlobalStyles
+				styles={{ body: { margin: "0", backgroundColor: "#00A3E4" } }}
+			/>
 			<Paper
 				elevation={6}
 				sx={{ padding: "25px 20px", maxWidth: "350px", ...sx }}
