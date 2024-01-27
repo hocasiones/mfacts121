@@ -12,7 +12,6 @@ import {
 	TextField,
 	Typography,
 	useTheme,
-	GlobalStyles,
 } from "@mui/material"
 import Accordion from "@mui/material/Accordion"
 import AccordionDetails from "@mui/material/AccordionDetails"
@@ -30,6 +29,9 @@ import Logo from "src/components/Logo"
 import SignInUp from "src/components/SignInUp"
 import * as yup from "yup"
 import userStore from "../store/userStore"
+import { useRouter } from "next/router"
+import { set } from "js-cookie"
+import { LoadingButton } from "@mui/lab"
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -39,9 +41,10 @@ const stripeSecret = require("stripe")(
 
 const schema = yup
 	.object({
-		firstName: yup.string().required(),
-		lastName: yup.string().required(),
-		email: yup.string().email().required(),
+		firstName: yup.string().required("First Name is required"),
+		lastName: yup.string().required("Last Name is required"),
+		email: yup.string().email().required("Email is required"),
+		school: yup.string().required("School is required"),
 	})
 	.required()
 
@@ -108,10 +111,12 @@ const StripeForm = () => {
 
 const SignUp = () => {
 	const userState = userStore()
+	const router = useRouter()
 	const theme = useTheme()
 	const isMobileView = useMedia("(max-width: 768px)", false)
 	const [expanded, setExpanded] = React.useState("panel1")
 	const ref = React.useRef(null)
+	const [onFormSubmitting, setOnFormSubmitting] = React.useState(false)
 
 	const handleChange = (panel) => (event, newExpanded) => {
 		setExpanded(newExpanded ? panel : false)
@@ -125,7 +130,7 @@ const SignUp = () => {
 			])
 		},
 		onSuccess: (data) => {
-			console.log(data)
+			// console.log(data)
 		},
 		onError: (error) => {
 			console.log(error)
@@ -142,6 +147,34 @@ const SignUp = () => {
 	} = useForm({
 		resolver: yupResolver(schema),
 	})
+
+	// console.log(getValues(), "getValues")
+
+	const onInvoiceSubmit = async (data) => {
+		setOnFormSubmitting(true)
+		// console.log(data)
+
+		try {
+			await ky
+				.post("/api/sendemail", { json: { ...data, plan: "Teacher Pack" } })
+				.json()
+
+			userState.setNotice({
+				enable: true,
+				message: "Invoice Request Sent",
+			})
+			router.push("/signin/")
+		} catch (error) {
+			console.log(error)
+			userState.setNotice({
+				enable: true,
+				message: "Something went wrong. Please try again.",
+				duration: 5000,
+				color: "error",
+			})
+			setOnFormSubmitting(false)
+		}
+	}
 
 	const createPaypalOrder = async (data) => {
 		try {
@@ -168,8 +201,8 @@ const SignUp = () => {
 
 	return (
 		<SignInUp sx={{ width: 800, maxWidth: "100%", padding: "30px" }}>
-			<form onSubmit={handleSubmit((formData) => {})}>
-				<Stack>
+			<form onSubmit={handleSubmit(onInvoiceSubmit)}>
+				<Stack spacing={3}>
 					<Box
 						sx={{
 							padding: "0 10%",
@@ -187,17 +220,29 @@ const SignUp = () => {
 							variant="outlined"
 							label="First Name"
 							{...register("firstName")}
-							sx={{ flex: 1 }}
+							sx={{ flex: 1, ".MuiInputBase-root": { marginBottom: 0 } }}
+							helperText={errors.firstName?.message}
+							error={!!errors.firstName}
 						/>
 						<TextField
 							variant="outlined"
 							label="Last Name"
 							{...register("lastName")}
-							sx={{ flex: 1 }}
+							sx={{ flex: 1, ".MuiInputBase-root": { marginBottom: 0 } }}
 						/>
 					</Stack>
-					<TextField variant="outlined" label="Email" {...register("email")} />
-					<TextField variant="outlined" label="School" />
+					<TextField
+						variant="outlined"
+						label="Email"
+						{...register("email")}
+						sx={{ flex: 1, ".MuiInputBase-root": { marginBottom: 0 } }}
+					/>
+					<TextField
+						variant="outlined"
+						label="School"
+						{...register("school")}
+						sx={{ flex: 1, ".MuiInputBase-root": { marginBottom: 0 } }}
+					/>
 
 					<FormControl sx={{ marginBottom: "20px" }}>
 						<Typography sx={{ marginBottom: "10px", fontWeight: "bold" }}>
@@ -223,69 +268,72 @@ const SignUp = () => {
 						</RadioGroup>
 					</FormControl>
 					<Typography sx={{ fontWeight: "bold" }}>Payment Options:</Typography>
-					<Accordion
-						expanded={expanded === "panel1"}
-						onChange={handleChange("panel1")}
-					>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls="panel1d-content"
-							id="panel1d-header"
+					<Stack>
+						<Accordion
+							expanded={expanded === "panel1"}
+							onChange={handleChange("panel1")}
 						>
-							<Typography variant="h6" color="#000">
-								Invoice
-							</Typography>
-						</AccordionSummary>
-						<AccordionDetails>
-							<Typography>
-								Invoice will be sent to your email address. Please allow 24 to
-								48 hours for processing.
-							</Typography>
-							<Button
-								type="submit"
-								variant="contained"
-								size="large"
-								sx={{ width: "100%", marginTop: "10px" }}
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon />}
+								aria-controls="panel1d-content"
+								id="panel1d-header"
 							>
-								SUBMIT
-							</Button>
-						</AccordionDetails>
-					</Accordion>
-					<Accordion
-						expanded={expanded === "panel2"}
-						onChange={handleChange("panel2")}
-					>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls="panel2d-content"
-							id="panel2d-header"
+								<Typography variant="h6" color="#000">
+									Invoice
+								</Typography>
+							</AccordionSummary>
+							<AccordionDetails>
+								<Typography>
+									Invoice will be sent to your email address. Please allow 24 to
+									48 hours for processing.
+								</Typography>
+								<LoadingButton
+									type="submit"
+									variant="contained"
+									size="large"
+									sx={{ width: "100%", marginTop: "10px" }}
+									loading={onFormSubmitting}
+								>
+									SUBMIT
+								</LoadingButton>
+							</AccordionDetails>
+						</Accordion>
+						<Accordion
+							expanded={expanded === "panel2"}
+							onChange={handleChange("panel2")}
 						>
-							<Typography variant="h6" color="#09368e">
-								PayPal
-							</Typography>
-						</AccordionSummary>
-						<AccordionDetails>
-							<PayPalButtons
-								createOrder={createPaypalOrder}
-								onApprove={onApprovePaypalOrder}
-							/>
-						</AccordionDetails>
-					</Accordion>
-					<Accordion
-						expanded={expanded === "panel3"}
-						onChange={handleChange("panel3")}
-					>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							aria-controls="panel3d-content"
-							id="panel3d-header"
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon />}
+								aria-controls="panel2d-content"
+								id="panel2d-header"
+							>
+								<Typography variant="h6" color="#09368e">
+									PayPal
+								</Typography>
+							</AccordionSummary>
+							<AccordionDetails>
+								<PayPalButtons
+									createOrder={createPaypalOrder}
+									onApprove={onApprovePaypalOrder}
+								/>
+							</AccordionDetails>
+						</Accordion>
+						<Accordion
+							expanded={expanded === "panel3"}
+							onChange={handleChange("panel3")}
 						>
-							<Typography variant="h6" color="#6860ff">
-								Stripe
-							</Typography>
-						</AccordionSummary>
-						<AccordionDetails ref={ref}></AccordionDetails>
-					</Accordion>
+							<AccordionSummary
+								expandIcon={<ExpandMoreIcon />}
+								aria-controls="panel3d-content"
+								id="panel3d-header"
+							>
+								<Typography variant="h6" color="#6860ff">
+									Stripe
+								</Typography>
+							</AccordionSummary>
+							<AccordionDetails ref={ref}></AccordionDetails>
+						</Accordion>
+					</Stack>
 					{/* <Button variant="contained" size="large">
 						REGISTER
 					</Button> */}
